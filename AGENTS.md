@@ -79,7 +79,7 @@ The default `PATTERN` (`xpack-ubuntu-1604`) and `VERSION` (`6.x`) come from the 
 
 ## Conventions
 
-- Every task file is included conditionally from `tasks/main.yml` via `when:` and tagged (`java`, `install`, `config`, `plugins`, `xpack`, `templates`) — add new functionality as its own included file rather than growing `main.yml` inline.
+- Every task file included from `tasks/main.yml` is tagged (`java`, `install`, `config`, `scripts`, `plugins`, `xpack`) — add new functionality as its own included file rather than growing `main.yml` inline. Only some includes (`java`, `scripts`, `plugins`, the snapshot release) are also gated by a `when:`; `install`, `config`, and `xpack` always run — `xpack` deliberately, per the in-file comment, so features can be removed as well as added. Don't assume a `when:` skip flag exists for install/config/xpack.
 - X-Pack file-realm security (users, roles) is written to disk before the service starts. Only the HTTP-API-driven pieces — native realm, license activation, templates — run after the service has started, and native realm additionally waits a fixed 15-second settle (`tasks/main.yml`). Don't reorder those ahead of the service start.
 - OS differences are isolated to `vars/Debian.yml` / `vars/RedHat.yml` and the matching `tasks/elasticsearch-{Debian,RedHat}.yml` pair; add a new platform by extending that pair, not by branching inline in shared tasks.
 - Custom Jinja filters live in `filter_plugins/custom.py`, not inline `{{ }}` gymnastics in templates — extend that module for new template logic.
